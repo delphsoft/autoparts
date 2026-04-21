@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.0.0",
+    "@mercadopago/sdk-react": "^1.0.7",
     "ai": "^4.0.0",
     "lucide-react": "^0.441.0",
     "mercadopago": "^2.0.0",
