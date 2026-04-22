@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { Heart, Star } from 'lucide-react';
+import { useCart } from '@/lib/cartStore';
 
 type Product = {
   id: number;
@@ -14,27 +15,44 @@ type Product = {
 };
 
 export default function ProductCard({ product }: { product: Product }) {
+  const { addItem } = useCart();
+
   return (
-    <div className="group bg-white border rounded-2xl overflow-hidden hover:shadow-xl transition-all">
+    <div className="product-card bg-white border rounded-3xl overflow-hidden group">
       <div className="relative">
-        <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-xl z-10">
+        <div className="absolute top-4 left-4 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-2xl z-10">
           -{product.discount}%
         </div>
-        <Heart className="absolute top-3 right-3 text-gray-400 hover:text-red-500 cursor-pointer z-10" size={20} />
-        <Image src={product.image} alt={product.name} width={300} height={200} className="w-full h-48 object-contain p-4" />
+        <Heart className="absolute top-4 right-4 text-gray-400 hover:text-red-500 cursor-pointer z-10" size={22} />
+        
+        <Image 
+          src={product.image} 
+          alt={product.name} 
+          width={400} 
+          height={300} 
+          className="w-full h-56 object-contain p-6 bg-white" 
+        />
       </div>
-      <div className="p-4">
-        <div className="flex text-amber-400">
-          {[...Array(5)].map((_, i) => (
-            <Star key={i} size={16} fill={i < product.rating ? "currentColor" : "none"} />
+
+      <div className="p-5">
+        <div className="flex items-center gap-1 text-amber-400">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Star key={i} size={16} fill={i < Math.floor(product.rating) ? "currentColor" : "none"} />
           ))}
+          <span className="text-xs text-gray-500 ml-2">({product.reviews})</span>
         </div>
-        <h3 className="font-semibold text-sm mt-2 line-clamp-2">{product.name}</h3>
-        <div className="mt-3 flex items-baseline gap-2">
-          <span className="text-2xl font-bold">${product.price}</span>
-          <span className="line-through text-gray-400 text-sm">${product.originalPrice}</span>
+
+        <h3 className="font-semibold text-sm mt-3 line-clamp-2 h-10">{product.name}</h3>
+
+        <div className="mt-4 flex items-baseline gap-2">
+          <span className="text-3xl font-bold text-emerald-600">${(product.price/100).toFixed(2)}</span>
+          <span className="text-gray-400 line-through text-sm">${(product.originalPrice/100).toFixed(2)}</span>
         </div>
-        <button className="w-full mt-4 bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700">
+
+        <button 
+          onClick={() => addItem({ id: product.id, name: product.name, price: product.price/100, image: product.image })}
+          className="w-full mt-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-2xl transition"
+        >
           Agregar al carrito
         </button>
       </div>
